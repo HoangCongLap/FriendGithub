@@ -1,5 +1,5 @@
 create database friend_github;
-    use quan_li_hoc_sinh;
+    use friend_github;
 
 CREATE TABLE user (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,

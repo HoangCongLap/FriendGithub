@@ -1,7 +1,9 @@
 package com.friendgithub.api.controller;
 
+import com.friendgithub.api.dto.request.ApiResponse;
 import com.friendgithub.api.dto.request.UserCreationRequest;
 import com.friendgithub.api.dto.request.UserUpdateRequest;
+import com.friendgithub.api.dto.response.UserResponse;
 import com.friendgithub.api.entity.User;
 import com.friendgithub.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,27 +18,30 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    User createUser(@RequestBody UserCreationRequest request){
-        return userService.createUser(request);
+    ApiResponse<User> createUser(@RequestBody UserCreationRequest request) {
+        ApiResponse<User> apiResponse = new ApiResponse<>();
+        apiResponse.setResult(userService.createUser(request));
+
+        return apiResponse;
     }
 
     @GetMapping
-    List<User> getUsers(){
+    List<User> getUsers() {
         return userService.getUsers();
     }
 
     @GetMapping("/{userId}")
-    User getUser(@PathVariable("userId") String userId){
+    UserResponse getUser(@PathVariable("userId") String userId) {
         return userService.getUser(userId);
     }
 
     @PutMapping("/{userId}")
-    User updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request){
+    UserResponse updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request) {
         return userService.updateUser(userId, request);
     }
 
     @DeleteMapping("/{userId}")
-    String deleteUser(@PathVariable String userId){
+    String deleteUser(@PathVariable String userId) {
         userService.deleteUser(userId);
         return "User has been deleted";
     }
