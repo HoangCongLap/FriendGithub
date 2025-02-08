@@ -1,6 +1,5 @@
 package com.friendgithub.api.dto.response;
 
-import com.friendgithub.api.response.RoleResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,9 +15,8 @@ import java.util.Set;
 public class UserResponse {
     private String id;
     private String username;
-    private String password;
     private String firstName;
     private String lastName;
     private LocalDate dob;
-    private Set<RoleResponse> roles;
+    private Set<String> roles;
 }
