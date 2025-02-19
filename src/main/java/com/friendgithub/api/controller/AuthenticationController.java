@@ -3,6 +3,7 @@ package com.friendgithub.api.controller;
 import com.friendgithub.api.dto.request.ApiResponse;
 import com.friendgithub.api.dto.request.AuthenticationRequest;
 import com.friendgithub.api.dto.request.IntrospectRequest;
+import com.friendgithub.api.dto.request.LogoutRequest;
 import com.friendgithub.api.dto.response.AuthenticationResponse;
 import com.friendgithub.api.dto.response.IntrospectResponse;
 import com.friendgithub.api.service.AuthenticationService;
@@ -40,5 +41,11 @@ public class AuthenticationController {
                 .build();
     }
 
+    @PostMapping("/logout")
+    ApiResponse<Void> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
+        authenticationService.logout(request);
+        return ApiResponse.<Void>builder()
+                .build();
+    }
 
 }
