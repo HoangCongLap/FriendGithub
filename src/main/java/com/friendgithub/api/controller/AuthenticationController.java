@@ -1,9 +1,6 @@
 package com.friendgithub.api.controller;
 
-import com.friendgithub.api.dto.request.ApiResponse;
-import com.friendgithub.api.dto.request.AuthenticationRequest;
-import com.friendgithub.api.dto.request.IntrospectRequest;
-import com.friendgithub.api.dto.request.LogoutRequest;
+import com.friendgithub.api.dto.request.*;
 import com.friendgithub.api.dto.response.AuthenticationResponse;
 import com.friendgithub.api.dto.response.IntrospectResponse;
 import com.friendgithub.api.service.AuthenticationService;
@@ -39,6 +36,13 @@ public class AuthenticationController {
         return ApiResponse.<IntrospectResponse>builder()
                 .result(result)
                 .build();
+    }
+
+    @PostMapping("/refresh")
+    ApiResponse<AuthenticationResponse> authenticate(@RequestBody RefreshRequest request)
+            throws ParseException, JOSEException {
+        var result = authenticationService.refreshToken(request);
+        return ApiResponse.<AuthenticationResponse>builder().result(result).build();
     }
 
     @PostMapping("/logout")
