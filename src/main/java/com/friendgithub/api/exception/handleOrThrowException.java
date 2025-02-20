@@ -1,6 +1,5 @@
 package com.friendgithub.api.exception;
 
-
 public class handleOrThrowException extends RuntimeException {
     public handleOrThrowException(String message) {
         super(message);

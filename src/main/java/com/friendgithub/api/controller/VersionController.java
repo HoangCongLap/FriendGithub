@@ -2,10 +2,9 @@ package com.friendgithub.api.controller;
 
 import com.friendgithub.api.entity.Version;
 import com.friendgithub.api.service.VersionService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/versions")
@@ -25,14 +24,15 @@ public class VersionController {
     }
 
     // API để lấy một phiên bản theo ID
-/*    @GetMapping("/{id}")
+    /*    @GetMapping("/{id}")
     public Optional<Version> getVersionById(@PathVariable String id) {
-        return versionService.getVersionById(id);
+    	return versionService.getVersionById(id);
     }*/
 
     // API để cập nhật một phiên bản
     @PutMapping("/{id}")
-    public Version updateVersion(@PathVariable String id, @RequestParam String projectId, @RequestParam String versionName) {
+    public Version updateVersion(@PathVariable String id, @RequestParam String projectId,
+                                 @RequestParam String versionName) {
         return versionService.updateVersion(id, projectId, versionName);
     }
 
@@ -41,5 +41,4 @@ public class VersionController {
     public void deleteVersion(@PathVariable String id) {
         versionService.deleteVersion(id);
     }
-
 }

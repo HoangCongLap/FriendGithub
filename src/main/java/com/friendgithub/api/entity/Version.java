@@ -1,6 +1,5 @@
 package com.friendgithub.api.entity;
 
-
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AccessLevel;
@@ -21,9 +20,10 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class Version {
     @Id
     String id;
+
     @Field("project_id")
     String projectId;
+
     @Field("version_name")
     String versionName;
-
 }

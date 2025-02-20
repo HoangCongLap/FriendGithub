@@ -1,12 +1,9 @@
 package com.friendgithub.api.entity;
 
-
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalDate;
 import java.util.Set;
-
+import lombok.*;
 
 @Getter
 @Setter
@@ -18,6 +15,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     private String username;
     private String password;
     private String firstName;

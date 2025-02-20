@@ -1,12 +1,10 @@
 package com.friendgithub.api.entity;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import java.util.Date;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.Date;
 
 @Getter
 @Setter

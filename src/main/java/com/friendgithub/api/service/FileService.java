@@ -8,11 +8,6 @@ import com.friendgithub.api.exception.handleOrThrowException;
 import com.friendgithub.api.model.FileRequest;
 import com.friendgithub.api.model.Project;
 import com.friendgithub.api.repository.FileRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -22,6 +17,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileService {
@@ -60,7 +59,8 @@ public class FileService {
         return fileName.substring(dotIndex + 1);
     }
 
-    public String writeFile(String projectId, String userId, String fileName, InputStream file, String fileExtension) throws Exception {
+    public String writeFile(String projectId, String userId, String fileName, InputStream file, String fileExtension)
+            throws Exception {
         if (userId == null || userId.trim().isEmpty()) {
             throw new handleOrThrowException("User ID must not be empty");
         }
@@ -69,9 +69,8 @@ public class FileService {
             throw new handleOrThrowException("File must not be empty");
         }
 
-        String fullFileName = (fileExtension == null || fileExtension.trim().isEmpty())
-                ? fileName
-                : fileName + "." + fileExtension;
+        String fullFileName =
+                (fileExtension == null || fileExtension.trim().isEmpty()) ? fileName : fileName + "." + fileExtension;
         Path pathToSave = Paths.get(ROOT_REPOSITORY, fullFileName);
 
         createDirectory(pathToSave.getParent());
@@ -89,7 +88,8 @@ public class FileService {
                 modifiedByUserId = userId;
             }
 
-            FileEntity fileEntity = createFile(projectId, fileName, size, userId, modifiedByUserId, pathToSave, createdAt);
+            FileEntity fileEntity =
+                    createFile(projectId, fileName, size, userId, modifiedByUserId, pathToSave, createdAt);
             System.out.println(fileEntity);
         } catch (Exception e) {
             throw new handleOrThrowException("An error while saving the file: " + e.getMessage(), e);
@@ -99,7 +99,8 @@ public class FileService {
     }
 
     public byte[] readFile(FileRequest request) throws IOException {
-        Optional<String> jsonPath = fileRepository.findFilePathByProjectIdAndFileName(request.getProjectId(), request.getFileName());
+        Optional<String> jsonPath =
+                fileRepository.findFilePathByProjectIdAndFileName(request.getProjectId(), request.getFileName());
 
         if (jsonPath.isPresent()) {
             String json = jsonPath.get();
@@ -122,7 +123,8 @@ public class FileService {
                 throw new IOException("Unable to extract file_path from response JSON");
             }
         } else {
-            throw new IOException("Path not found for projectId: " + request.getProjectId() + " and fileName: " + request.getFileName());
+            throw new IOException("Path not found for projectId: " + request.getProjectId() + " and fileName: "
+                    + request.getFileName());
         }
     }
 
@@ -132,8 +134,14 @@ public class FileService {
         }
     }
 
-    private FileEntity createFile(String projectId, String fileName, String size, String createdByUserId, String modifiedByUserId, Path
-            pathToSave, Date createdAt) {
+    private FileEntity createFile(
+            String projectId,
+            String fileName,
+            String size,
+            String createdByUserId,
+            String modifiedByUserId,
+            Path pathToSave,
+            Date createdAt) {
         FileEntity file = new FileEntity();
         file.setProjectId(projectId);
         file.setFileName(fileName);
@@ -170,6 +178,4 @@ public class FileService {
 
         return fileDetails;
     }
-
-
 }

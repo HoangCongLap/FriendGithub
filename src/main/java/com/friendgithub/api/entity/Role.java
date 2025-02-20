@@ -1,12 +1,10 @@
 package com.friendgithub.api.entity;
 
-
 import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
-import lombok.*;
 import jakarta.persistence.Id;
-
+import jakarta.persistence.ManyToMany;
 import java.util.Set;
+import lombok.*;
 
 @Getter
 @Setter

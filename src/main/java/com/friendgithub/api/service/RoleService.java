@@ -5,12 +5,11 @@ import com.friendgithub.api.dto.response.RoleResponse;
 import com.friendgithub.api.mapper.RoleMapper;
 import com.friendgithub.api.repository.PermissionRepository;
 import com.friendgithub.api.repository.RoleRepository;
+import java.util.HashSet;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

@@ -13,7 +13,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
 public class Project {
 
     String fileName;

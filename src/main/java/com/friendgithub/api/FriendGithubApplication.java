@@ -9,5 +9,4 @@ public class FriendGithubApplication {
     public static void main(String[] args) {
         SpringApplication.run(FriendGithubApplication.class, args);
     }
-
 }

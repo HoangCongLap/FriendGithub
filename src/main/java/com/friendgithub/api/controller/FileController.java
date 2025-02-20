@@ -6,6 +6,8 @@ import com.friendgithub.api.model.Project;
 import com.friendgithub.api.model.Response;
 import com.friendgithub.api.service.FileService;
 import com.friendgithub.api.urls.Path;
+import java.io.IOException;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
@@ -14,9 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping(Path.File.FILE)
@@ -29,9 +28,15 @@ public class FileController {
         this.fileService = fileService;
     }
 
-    @RequestMapping(value = Path.File.UPLOAD, method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Response> uploadFileNew(@RequestParam("file") MultipartFile file, @RequestParam("userId") String userId,
-                                                  @RequestParam("projectId") String projectId) throws Exception {
+    @RequestMapping(
+            value = Path.File.UPLOAD,
+            method = RequestMethod.POST,
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Response> uploadFileNew(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("userId") String userId,
+            @RequestParam("projectId") String projectId)
+            throws Exception {
         try {
             String path = fileService.saveMediaFile(projectId, file, userId);
 
@@ -58,8 +63,7 @@ public class FileController {
     }
 
     @RequestMapping(value = Path.File.DOWNLOAD, method = RequestMethod.POST)
-    public ResponseEntity<ByteArrayResource> downloadFile(
-            @RequestBody FileRequest request) throws IOException {
+    public ResponseEntity<ByteArrayResource> downloadFile(@RequestBody FileRequest request) throws IOException {
 
         byte[] data = fileService.getMediaFile(request);
 
@@ -96,5 +100,4 @@ public class FileController {
             return ResponseEntity.status(500).body(response);
         }
     }
-
 }

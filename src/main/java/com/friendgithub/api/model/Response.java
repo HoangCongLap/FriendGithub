@@ -1,6 +1,5 @@
 package com.friendgithub.api.model;
 
-
 import lombok.Builder;
 import lombok.Data;
 

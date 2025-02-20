@@ -5,11 +5,10 @@ import com.friendgithub.api.dto.response.PermissionResponse;
 import com.friendgithub.api.entity.Permission;
 import com.friendgithub.api.mapper.PermissionMapper;
 import com.friendgithub.api.repository.PermissionRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

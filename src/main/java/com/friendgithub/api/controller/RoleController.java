@@ -1,15 +1,13 @@
 package com.friendgithub.api.controller;
 
-
 import com.friendgithub.api.dto.request.ApiResponse;
 import com.friendgithub.api.dto.request.RoleRequest;
 import com.friendgithub.api.dto.response.RoleResponse;
 import com.friendgithub.api.service.RoleService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/roles")

@@ -4,11 +4,10 @@ import com.friendgithub.api.dto.request.ApiResponse;
 import com.friendgithub.api.dto.request.PermissionRequest;
 import com.friendgithub.api.dto.response.PermissionResponse;
 import com.friendgithub.api.service.PermissionService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/permissions")

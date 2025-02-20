@@ -5,12 +5,11 @@ import com.friendgithub.api.dto.request.UserCreationRequest;
 import com.friendgithub.api.dto.request.UserUpdateRequest;
 import com.friendgithub.api.dto.response.UserResponse;
 import com.friendgithub.api.service.UserService;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -32,9 +31,7 @@ public class UserController {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
         log.info("Username: {}", authentication.getName());
-        authentication.getAuthorities().forEach(grantedAuthority ->
-                log.info(grantedAuthority.getAuthority())
-        );
+        authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
 
         return ApiResponse.<List<UserResponse>>builder()
                 .result(userService.getUsers())

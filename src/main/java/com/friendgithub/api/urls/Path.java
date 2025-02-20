@@ -8,7 +8,6 @@ public class Path {
         public static final String DOWNLOAD = "/download";
         public static final String LIST = "/list-files";
 
-        private File() {
-        }
+        private File() {}
     }
 }

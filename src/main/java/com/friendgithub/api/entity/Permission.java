@@ -1,8 +1,8 @@
 package com.friendgithub.api.entity;
 
 import jakarta.persistence.Entity;
-import lombok.*;
 import jakarta.persistence.Id;
+import lombok.*;
 
 @Getter
 @Setter
