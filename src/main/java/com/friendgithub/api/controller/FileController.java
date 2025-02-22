@@ -6,8 +6,10 @@ import com.friendgithub.api.model.Project;
 import com.friendgithub.api.model.Response;
 import com.friendgithub.api.service.FileService;
 import com.friendgithub.api.urls.Path;
+
 import java.io.IOException;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
@@ -28,10 +30,7 @@ public class FileController {
         this.fileService = fileService;
     }
 
-    @RequestMapping(
-            value = Path.File.UPLOAD,
-            method = RequestMethod.POST,
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @RequestMapping(value = Path.File.UPLOAD, method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Response> uploadFileNew(
             @RequestParam("file") MultipartFile file,
             @RequestParam("userId") String userId,

@@ -1,20 +1,24 @@
 package com.friendgithub.api.service;
 
+import com.friendgithub.api.constant.PredefinedRole;
 import com.friendgithub.api.dto.request.UserCreationRequest;
 import com.friendgithub.api.dto.request.UserUpdateRequest;
 import com.friendgithub.api.dto.response.UserResponse;
+import com.friendgithub.api.entity.Role;
 import com.friendgithub.api.entity.User;
-import com.friendgithub.api.enums.Role;
 import com.friendgithub.api.exception.AppException;
 import com.friendgithub.api.exception.ErrorCode;
 import com.friendgithub.api.mapper.UserMapper;
 import com.friendgithub.api.repository.RoleRepository;
 import com.friendgithub.api.repository.UserRepository;
+
 import java.util.HashSet;
 import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,12 +41,18 @@ public class UserService {
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        HashSet<String> roles = new HashSet<>();
-        roles.add(Role.USER.name());
+        HashSet<Role> roles = new HashSet<>();
+        roleRepository.findById(PredefinedRole.USER_ROLE).ifPresent(roles::add);
 
-        // user.setRoles(roles);
+        user.setRoles(roles);
 
-        return userMapper.toUserResponse(userRepository.save(user));
+        try {
+            user = userRepository.save(user);
+        } catch (DataIntegrityViolationException exception) {
+            throw new AppException(ErrorCode.USER_EXISTED);
+        }
+
+        return userMapper.toUserResponse(user);
     }
 
     public UserResponse updateUser(String userId, UserUpdateRequest request) {
