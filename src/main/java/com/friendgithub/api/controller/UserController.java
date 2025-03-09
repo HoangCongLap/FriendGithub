@@ -5,11 +5,12 @@ import com.friendgithub.api.dto.request.UserCreationRequest;
 import com.friendgithub.api.dto.request.UserUpdateRequest;
 import com.friendgithub.api.dto.response.UserResponse;
 import com.friendgithub.api.service.UserService;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -21,7 +22,7 @@ public class UserController {
     @PostMapping
     ApiResponse<UserResponse> createUser(@RequestBody UserCreationRequest request) {
         ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
-        apiResponse.setResult(userService.createUser(request));
+        apiResponse.setData(userService.createUser(request));
 
         return apiResponse;
     }
@@ -34,7 +35,7 @@ public class UserController {
         authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
 
         return ApiResponse.<List<UserResponse>>builder()
-                .result(userService.getUsers())
+                .data(userService.getUsers())
                 .build();
     }
 
@@ -51,7 +52,7 @@ public class UserController {
     @GetMapping("/my-info")
     ApiResponse<UserResponse> getMyInfo() {
         return ApiResponse.<UserResponse>builder()
-                .result(userService.getMyInfo())
+                .data(userService.getMyInfo())
                 .build();
     }
 

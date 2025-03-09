@@ -4,10 +4,11 @@ import com.friendgithub.api.dto.request.ApiResponse;
 import com.friendgithub.api.dto.request.RoleRequest;
 import com.friendgithub.api.dto.response.RoleResponse;
 import com.friendgithub.api.service.RoleService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/roles")
@@ -19,14 +20,14 @@ public class RoleController {
     @PostMapping
     ApiResponse<RoleResponse> create(@RequestBody RoleRequest request) {
         return ApiResponse.<RoleResponse>builder()
-                .result(roleService.create(request))
+                .data(roleService.create(request))
                 .build();
     }
 
     @GetMapping
     ApiResponse<List<RoleResponse>> getAll() {
         return ApiResponse.<List<RoleResponse>>builder()
-                .result(roleService.getAll())
+                .data(roleService.getAll())
                 .build();
     }
 

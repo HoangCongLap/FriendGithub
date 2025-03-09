@@ -1,12 +1,13 @@
 package com.friendgithub.api.repository;
 
 import com.friendgithub.api.entity.FileEntity;
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface FileRepository extends MongoRepository<FileEntity, String> {

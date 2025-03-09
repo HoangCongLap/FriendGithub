@@ -4,10 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.friendgithub.api.Util.ZipUtil;
 import com.friendgithub.api.entity.FileEntity;
-import com.friendgithub.api.exception.handleOrThrowException;
 import com.friendgithub.api.model.FileRequest;
 import com.friendgithub.api.model.Project;
 import com.friendgithub.api.repository.FileRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,11 +22,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 @Service
 public class FileService {
 
@@ -34,7 +32,6 @@ public class FileService {
     private FileRepository fileRepository;
 
     public String saveMediaFile(String projectId, MultipartFile file, String userId) throws Exception {
-
         String originalFilename = file.getOriginalFilename();
         if (originalFilename == null) {
             throw new Exception("File must have a name");
@@ -64,18 +61,22 @@ public class FileService {
     public String writeFile(String projectId, String userId, String fileName, InputStream file, String fileExtension)
             throws Exception {
         if (userId == null || userId.trim().isEmpty()) {
-            throw new handleOrThrowException("User ID must not be empty");
+            throw new IllegalArgumentException("User ID must not be empty");
         }
 
         if (file == null || file.available() == 0) {
-            throw new handleOrThrowException("File must not be empty");
+            throw new IllegalArgumentException("File must not be empty");
         }
 
-        String fullFileName =
-                (fileExtension == null || fileExtension.trim().isEmpty()) ? fileName : fileName + "." + fileExtension;
+        String fullFileName = (fileExtension == null || fileExtension.trim().isEmpty()) ?
+                fileName : fileName + "." + fileExtension;
         Path pathToSave = Paths.get(ROOT_REPOSITORY, fullFileName);
 
         createDirectory(pathToSave.getParent());
+
+        if (fileRepository.existsByProjectIdAndFileName(projectId, fileName)) {
+            throw new IllegalArgumentException("File name already exists in this project");
+        }
 
         try {
             ZipUtil.zipFile(file, pathToSave, fullFileName);
@@ -90,11 +91,13 @@ public class FileService {
                 modifiedByUserId = userId;
             }
 
-            FileEntity fileEntity =
-                    createFile(projectId, fileName, size, userId, modifiedByUserId, pathToSave, createdAt);
+            FileEntity fileEntity = createFile(projectId, fileName, size, userId,
+                    modifiedByUserId, pathToSave, createdAt);
             System.out.println(fileEntity);
+        } catch (IOException e) {
+            throw e;
         } catch (Exception e) {
-            throw new handleOrThrowException("An error while saving the file: " + e.getMessage(), e);
+            throw new IllegalArgumentException("An error while saving the file: " + e.getMessage(), e);
         }
 
         return pathToSave.toString();
@@ -143,7 +146,8 @@ public class FileService {
             String createdByUserId,
             String modifiedByUserId,
             Path pathToSave,
-            Date createdAt) {
+            Date createdAt) throws IOException {
+
         FileEntity file = new FileEntity();
         file.setProjectId(projectId);
         file.setFileName(fileName);
@@ -152,6 +156,7 @@ public class FileService {
         file.setModifiedByUserId(modifiedByUserId);
         file.setPath(String.valueOf(pathToSave));
         file.setCreateAt(createdAt);
+
         return fileRepository.save(file);
     }
 

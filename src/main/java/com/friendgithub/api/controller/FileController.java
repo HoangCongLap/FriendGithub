@@ -1,15 +1,11 @@
 package com.friendgithub.api.controller;
 
-import com.friendgithub.api.exception.handleOrThrowException;
+import com.friendgithub.api.dto.request.ApiResponse;
 import com.friendgithub.api.model.FileRequest;
 import com.friendgithub.api.model.Project;
 import com.friendgithub.api.model.Response;
 import com.friendgithub.api.service.FileService;
 import com.friendgithub.api.urls.Path;
-
-import java.io.IOException;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
@@ -18,6 +14,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping(Path.File.FILE)
@@ -31,34 +30,28 @@ public class FileController {
     }
 
     @RequestMapping(value = Path.File.UPLOAD, method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Response> uploadFileNew(
+    public ApiResponse<String> uploadFileNew(
             @RequestParam("file") MultipartFile file,
             @RequestParam("userId") String userId,
-            @RequestParam("projectId") String projectId)
-            throws Exception {
-        try {
-            String path = fileService.saveMediaFile(projectId, file, userId);
+            @RequestParam("projectId") String projectId) throws Exception {
 
-            Response response = Response.builder()
-                    .code("SUCCESS_CODE")
-                    .message("File uploaded successfully")
-                    .data(path)
-                    .build();
-            System.out.println("uploadFile: " + response);
-            return ResponseEntity.ok(response);
-        } catch (handleOrThrowException ex) {
-            Response response = Response.builder()
-                    .code("ERROR_CODE")
-                    .message(ex.getMessage())
-                    .build();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        } catch (Exception ex) {
-            Response response = Response.builder()
-                    .code("ERROR_CODE")
-                    .message("File upload failed: " + ex.getMessage())
-                    .build();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        if (projectId == null || projectId.isEmpty()) {
+            throw new IllegalArgumentException("Project ID must not be empty.");
         }
+
+        if (userId == null || userId.isEmpty()) {
+            throw new IllegalArgumentException("User ID must not be empty.");
+        }
+
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("File must not be empty.");
+        }
+
+        String path = fileService.saveMediaFile(projectId, file, userId);
+
+        return ApiResponse.<String>builder()
+                .data(path)
+                .build();
     }
 
     @RequestMapping(value = Path.File.DOWNLOAD, method = RequestMethod.POST)

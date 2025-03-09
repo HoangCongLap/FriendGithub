@@ -20,23 +20,26 @@ public class ZipUtil {
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 zipOut.write(buffer, 0, bytesRead);
             }
+            zipOut.closeEntry();
         }
     }
 
     public static byte[] unzipFile(Path zipPath) throws IOException {
-        try (ZipInputStream zipIn = new ZipInputStream(Files.newInputStream(zipPath))) {
-            ZipEntry zipEntry = zipIn.getNextEntry();
-            if (zipEntry != null) {
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                byte[] buffer = new byte[1024];
-                int bytesRead;
+        try (ZipInputStream zipIn = new ZipInputStream(Files.newInputStream(zipPath));
+             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+
+            ZipEntry zipEntry;
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+
+            while ((zipEntry = zipIn.getNextEntry()) != null) {
                 while ((bytesRead = zipIn.read(buffer)) != -1) {
                     outputStream.write(buffer, 0, bytesRead);
                 }
-                return outputStream.toByteArray();
-            } else {
-                throw new IOException("No entries found in zip file");
+                zipIn.closeEntry();
             }
+
+            return outputStream.toByteArray();
         }
     }
 }
