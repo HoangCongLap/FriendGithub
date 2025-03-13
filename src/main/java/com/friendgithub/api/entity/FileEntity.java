@@ -38,6 +38,9 @@ public class FileEntity {
     @Field("file_path")
     String path;
 
+    @Field("version")
+    private int version;
+
     @Field("create_at")
     Date createAt;
 

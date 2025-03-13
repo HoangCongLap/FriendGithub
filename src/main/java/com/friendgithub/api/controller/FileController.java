@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -54,6 +55,39 @@ public class FileController {
                 .build();
     }
 
+    // upload list file
+    @RequestMapping(value = Path.File.UPLOAD_MULTIPLE, method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<List<String>> uploadMultipleFiles(
+            @RequestParam("files") List<MultipartFile> files,
+            @RequestParam("userId") String userId,
+            @RequestParam("projectId") String projectId) throws Exception {
+
+        if (projectId == null || projectId.isEmpty()) {
+            throw new IllegalArgumentException("Project ID must not be empty.");
+        }
+
+        if (userId == null || userId.isEmpty()) {
+            throw new IllegalArgumentException("User ID must not be empty.");
+        }
+
+        if (files == null || files.isEmpty()) {
+            throw new IllegalArgumentException("Files must not be empty.");
+        }
+
+        List<String> paths = new ArrayList<>();
+        for (MultipartFile file : files) {
+            if (!file.isEmpty()) {
+                String path = fileService.saveMediaFile(projectId, file, userId);
+                paths.add(path);
+            }
+        }
+
+        return ApiResponse.<List<String>>builder()
+                .data(paths)
+                .build();
+    }
+
+    // download file
     @RequestMapping(value = Path.File.DOWNLOAD, method = RequestMethod.POST)
     public ResponseEntity<ByteArrayResource> downloadFile(@RequestBody FileRequest request) throws IOException {
 
@@ -73,7 +107,7 @@ public class FileController {
     }
 
     // API để lấy danh sách tất cả các file của project
-    @RequestMapping(value = Path.File.LIST, method = RequestMethod.GET)
+    @RequestMapping(value = Path.File.GET_LIST, method = RequestMethod.GET)
     public ResponseEntity<Response> listFileForProject(@RequestParam("projectId") String projectId) {
         try {
             List<Project> listFile = fileService.fetchListFileForProject(projectId);

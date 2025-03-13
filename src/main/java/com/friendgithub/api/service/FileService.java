@@ -46,10 +46,6 @@ public class FileService {
         }
     }
 
-    public byte[] getMediaFile(FileRequest request) throws IOException {
-        return readFile(request);
-    }
-
     private String getFileExtension(String fileName) {
         int dotIndex = fileName.lastIndexOf('.');
         if (dotIndex == -1 || dotIndex == fileName.length() - 1) {
@@ -73,10 +69,6 @@ public class FileService {
         Path pathToSave = Paths.get(ROOT_REPOSITORY, fullFileName);
 
         createDirectory(pathToSave.getParent());
-
-        if (fileRepository.existsByProjectIdAndFileName(projectId, fileName)) {
-            throw new IllegalArgumentException("File name already exists in this project");
-        }
 
         try {
             ZipUtil.zipFile(file, pathToSave, fullFileName);
@@ -104,8 +96,7 @@ public class FileService {
     }
 
     public byte[] readFile(FileRequest request) throws IOException {
-        Optional<String> jsonPath =
-                fileRepository.findFilePathByProjectIdAndFileName(request.getProjectId(), request.getFileName());
+        Optional<String> jsonPath = fileRepository.findFilePathByProjectIdAndFileName(request.getProjectId(), request.getFileName());
 
         if (jsonPath.isPresent()) {
             String json = jsonPath.get();
@@ -148,12 +139,19 @@ public class FileService {
             Path pathToSave,
             Date createdAt) throws IOException {
 
+        int version = 1;
+        Optional<FileEntity> existingFile = fileRepository.findByProjectIdAndFileName(projectId, fileName);
+        if (existingFile.isPresent()) {
+            version = existingFile.get().getVersion() + 1;
+        }
+
         FileEntity file = new FileEntity();
         file.setProjectId(projectId);
         file.setFileName(fileName);
         file.setSize(size);
         file.setCreatedByUserId(createdByUserId);
         file.setModifiedByUserId(modifiedByUserId);
+        file.setVersion(version);
         file.setPath(String.valueOf(pathToSave));
         file.setCreateAt(createdAt);
 
@@ -167,6 +165,11 @@ public class FileService {
         }
         return fileName.substring(0, dotIndex);
     }
+
+    public byte[] getMediaFile(FileRequest request) throws IOException {
+        return readFile(request);
+    }
+
 
     public List<Project> fetchListFileForProject(String projectId) {
         List<Project> fileDetails = new ArrayList<>();
