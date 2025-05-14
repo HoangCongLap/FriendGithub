@@ -140,7 +140,7 @@ public class FileService {
             Date createdAt) throws IOException {
 
         int version = 1;
-        Optional<FileEntity> existingFile = fileRepository.findByProjectIdAndFileName(projectId, fileName);
+        Optional<FileEntity> existingFile = fileRepository.findByProjectIdAndFileNameAndPath(projectId, fileName, String.valueOf(pathToSave));
         if (existingFile.isPresent()) {
             version = existingFile.get().getVersion() + 1;
         }

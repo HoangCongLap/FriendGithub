@@ -18,5 +18,5 @@ public interface FileRepository extends MongoRepository<FileEntity, String> {
 
     List<FileEntity> findByProjectId(String projectId);
 
-    Optional<FileEntity> findByProjectIdAndFileName(String projectId, String fileName);
+    Optional<FileEntity> findByProjectIdAndFileNameAndPath(String projectId, String fileName, String path);
 }

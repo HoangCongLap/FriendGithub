@@ -8,37 +8,34 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
-@ControllerAdvice
+@RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
-    @ExceptionHandler(value = Exception.class)
-    ResponseEntity<ApiResponse> handlingRuntimeException(RuntimeException exception) {
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse> handleRuntimeException(Exception exception) {
         log.error("Exception: ", exception);
         ApiResponse apiResponse = new ApiResponse();
-
         apiResponse.setCode(ErrorCode.UNKNOWN_ERROR.getCode());
         apiResponse.setMessage(exception.getMessage());
-
         return ResponseEntity.badRequest().body(apiResponse);
     }
 
-    @ExceptionHandler(value = AppException.class)
-    ResponseEntity<ApiResponse> handlingAppException(AppException exception) {
+    @ExceptionHandler(AppException.class)
+    public ResponseEntity<ApiResponse> handleAppException(AppException exception) {
         ErrorCode errorCode = exception.getErrorCode();
         ApiResponse apiResponse = new ApiResponse();
-
         apiResponse.setCode(errorCode.getCode());
         apiResponse.setMessage(errorCode.getMessage());
-
         return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
     }
 
-    @ExceptionHandler(value = AccessDeniedException.class)
-    ResponseEntity<ApiResponse> handlingAccessDeniedException(AccessDeniedException exception) {
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiResponse> handleAccessDeniedException(AccessDeniedException exception) {
         ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
-
         return ResponseEntity.status(errorCode.getStatusCode())
                 .body(ApiResponse.builder()
                         .code(errorCode.getCode())
@@ -49,20 +46,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<Response> handleMaxSizeException(MaxUploadSizeExceededException exc) {
         Response response = Response.builder()
-                .message("File to large!")
+                .message("File too large!")
                 .build();
         return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(response);
     }
-
-
-    //    @ExceptionHandler(value = AppException.class)
-    //    ResponseEntity<ApiResponse> handlingAppException(AppException exception) {
-    //        ErrorCode errorCode = exception.getErrorCode();
-    //        ApiResponse apiResponse = new ApiResponse();
-    //
-    //        apiResponse.setCode(errorCode.getCode());
-    //        apiResponse.setMessage(errorCode.getMessage());
-    //
-    //        return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
-    //    }
 }
